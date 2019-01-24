@@ -1,0 +1,9 @@
+python-gnupg
+requests
+flask
+flask_swagger
+flask_cors
+pymysql
+flask_jwt_simple
+PyJWT
+Flask-JWT-Simple

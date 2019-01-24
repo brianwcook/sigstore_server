@@ -1,12 +1,12 @@
 import json
 import flask
-from flask import abort, Response, request, jsonify, send_from_directory,render_template, make_response
+from flask import abort, Response, request, jsonify, send_from_directory,render_template, make_response,send_file
 import traceback
 from flask_swagger import swagger
 import os
 from flask_cors import CORS
 import sigstore
-
+import io
 
 from flask_jwt_simple import (
     JWTManager, jwt_required, get_jwt
@@ -102,7 +102,8 @@ def store_signature():
 
     try:
         result, code = sigstore.store_signature(post_dict['full_reg_path'],
-                                            post_dict['signature']
+                                            post_dict['signature'],
+                                            post_dict['pub_key']
                                             )
     except KeyError:
         result = {"message" : "Not all required values were provided in the request."}
@@ -127,9 +128,13 @@ def get_sig(path):
          description: not found
         """
 
-    signature, code = sigstore.get_signature(path)
+    signature, index, code = sigstore.get_signature(path)
 
-    return make_response(signature, code)
+    return send_file(
+    io.BytesIO(signature),
+    mimetype = 'document',
+    as_attachment = True,
+    attachment_filename = 'signature-' + str(index))
 
 
 

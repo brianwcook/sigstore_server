@@ -3,7 +3,8 @@ from sqlalchemy import create_engine, UniqueConstraint, select, func, ForeignKey
 from sqlalchemy import Column, Integer, String, Text, asc
 from sqlalchemy.orm import sessionmaker, column_property
 from sqlalchemy.ext.declarative import declarative_base
-
+import gnupg
+import base64
 
 class SigstoreDb:
 
@@ -67,6 +68,7 @@ sigstore_db.Base.metadata.create_all(sigstore_db.engine)
 
 def store_signature(full_reg_path, signature):
 
+    # decrypt signature
 
     session = sigstore_db.Session()
     row = TableSigstore(full_reg_path=full_reg_path,
@@ -77,6 +79,20 @@ def store_signature(full_reg_path, signature):
     session.commit()
     # session.remove()
     return {"message": 'success'}, 201
+
+
+def decrypt_data(encrypted):
+    # this patch is needed to make deecrypt work in python3
+    # https://github.com/isislovecruft/python-gnupg/issues/102#issuecomment-325979273
+
+    gpg = gnupg.GPG(binary="/usr/local/bin/gpg", homedir="Users/bcook/.gnupg")
+    data = open("signature-1", "rb").read()
+    decrypted_data = gpg.decrypt(data)
+    print(decrypted_data.ok)
+    print(decrypted_data.stderr)
+    print(str(decrypted_data))
+
+
 
 
 def get_signature(full_sig_path):
@@ -92,7 +108,10 @@ def get_signature(full_sig_path):
     if len(query_result) == 0:
         return "signature not found.", 404
 
-    return query_result[int(index)-1].signature, 200
+    bin_sig = base64.b64decode(query_result[int(index)-1].signature)
+
+    return bin_sig, index, 200
+
 
 
 
