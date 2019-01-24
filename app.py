@@ -99,17 +99,16 @@ def store_signature():
         """
 
     post_dict = request.get_json(force=True, silent=False, cache=True)
-
+    #
     try:
         result, code = sigstore.store_signature(post_dict['full_reg_path'],
-                                            post_dict['signature'],
-                                            post_dict['pub_key']
-                                            )
+                                             post_dict['signature']
+                                             )
+
     except KeyError:
         result = {"message" : "Not all required values were provided in the request."}
         code = 200
         return make_response(json.dumps(result), code)
-
 
     return make_response(json.dumps(result), code)
 
@@ -135,6 +134,18 @@ def get_sig(path):
     mimetype = 'document',
     as_attachment = True,
     attachment_filename = 'signature-' + str(index))
+
+
+@app.route('/find')
+def find():
+    try:
+        repository = request.args.get('repository')
+    except:
+        return make_response(json.dumps({"meessage": "no search term provided."}, 400))
+
+    return make_response(json.dumps(sigstore.query_by_repo(repository)),200)
+
+
 
 
 
