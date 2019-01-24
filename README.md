@@ -6,11 +6,11 @@ This will use the RSA keypair in this repo, which should NEVER be used for any o
 
 In order to run the app, set the following environment variables to appropriate values.
 
-MARIABDB_TABLE_NAME=sigstore
-MARIADB_USER=root
-MARIADB_HOST=127.0.0.1
-JWT_CERT_FILE=DONOTUSETHISKEY.pub
-DB_NAME=my_database
-MARIADB_SECRET=/secrets/maria-db-pwd
+MARIABDB_TABLE_NAME=sigstore . 
+MARIADB_USER=root . 
+MARIADB_HOST=127.0.0.1 . 
+JWT_CERT_FILE=DONOTUSETHISKEY.pub . 
+DB_NAME=my_database . 
+MARIADB_SECRET=/secrets/maria-db-pwd . 
 
 See the postman API reference for other usage instructions at /swagger-ui/index.html
