@@ -12,10 +12,13 @@ In order to run the app, set the following environment variables to appropriate 
 * JWT_CERT_FILE=DONOTUSETHISKEY.pub
 * DB_NAME=my_database
 * MARIADB_SECRET=/secrets/maria-db-pwd
+* PGP_HOME=/home/johndoe/.gnupg
+* PGP_BINARY=/usr/local/bin/gpg
 
+Then you must import any public keys needed to decrypt the signatures into the GPG keyring in the home directory specified.  The app uses the public keys to decrypted signatures on ingest in order to store data to enable search.
 
 implemented paths:
-* /store_signature: insert a neew signature into the DB
+* /store_signature: insert a new signature into the DB
 * /sigstore/[path]: emulates the sigstore file tree from database.
 * /find?repository=[repository] returns JSON formatted result of all signatures for that repository, their docker-manifest-digest and docker-refeerence values.
 
