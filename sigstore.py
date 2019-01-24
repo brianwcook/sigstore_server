@@ -115,7 +115,7 @@ def decrypt_data(b64encrypted):
     # this patch is needed to make decrypt work in python3
     # https://github.com/isislovecruft/python-gnupg/issues/102#issuecomment-325979273
 
-    gpg = gnupg.GPG(binary="/usr/local/bin/gpg", homedir="Users/bcook/.gnupg")
+    gpg = gnupg.GPG(binary=os.getenv("GPG_BINARY"), homedir=os.getenv("GPG_HOME"))
 
     decrypted_data = gpg.decrypt(base64.b64decode(b64encrypted))
     print(decrypted_data.ok)
