@@ -12,8 +12,8 @@ In order to run the app, set the following environment variables to appropriate 
 * JWT_CERT_FILE=DONOTUSETHISKEY.pub
 * DB_NAME=my_database
 * MARIADB_SECRET=/secrets/maria-db-pwd
-* PGP_HOME=/home/johndoe/.gnupg
-* PGP_BINARY=/usr/local/bin/gpg
+* GPG_HOME=/home/johndoe/.gnupg
+* GPG_BINARY=/usr/local/bin/gpg
 
 Then you must import any public keys needed to decrypt the signatures into the GPG keyring in the home directory specified.  The app uses the public keys to decrypted signatures on ingest in order to store data to enable search.
 
