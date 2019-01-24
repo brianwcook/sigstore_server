@@ -16,9 +16,6 @@ app = flask.Flask(__name__, static_url_path='')
 
 CORS(app, resources=r'/*')
 
-if os.getenv("REQ_LDAP_GROUP", None) is None:
-    print('required env variable REQ_LDAP_GROUP is not set, exiting.')
-    exit(1)
 
 jwt_cert = os.getenv('JWT_CERT_FILE', None)
 if jwt_cert is None:

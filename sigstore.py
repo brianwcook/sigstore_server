@@ -1,6 +1,6 @@
 import os
 from sqlalchemy import create_engine, UniqueConstraint, select, func, ForeignKey
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Integer, String, Text, asc
 from sqlalchemy.orm import sessionmaker, column_property
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -58,9 +58,8 @@ class TableSigstore(sigstore_db.Base):
     id = Column(Integer, primary_key=True, nullable=False)
     full_reg_path = Column(String(255), nullable=False, index=True, unique=False)
     signature = Column(Text, nullable=False, unique=False)
-    index = Column(Integer, nullable=False, unique=False)
 
-    # todo: composite unique constraint of full_reg_path + index
+
 
 
 sigstore_db.Base.metadata.create_all(sigstore_db.engine)
@@ -68,24 +67,16 @@ sigstore_db.Base.metadata.create_all(sigstore_db.engine)
 
 def store_signature(full_reg_path, signature):
 
-    # todo: calculate index as number of existing sigs for reg_path + 1
+
     session = sigstore_db.Session()
     row = TableSigstore(full_reg_path=full_reg_path,
-                        signature=signature,
-                        index=next_index(full_reg_path))
+                        signature=signature)
+
 
     session.add(row)
     session.commit()
     # session.remove()
     return {"message": 'success'}, 201
-
-
-def next_index(full_reg_path):
-    # calculate the next index for inserting a signature
-
-    session = sigstore_db.Session()
-    query_result = session.query(TableSigstore).filter_by(full_reg_path=full_reg_path).all()
-    return len(query_result) + 1
 
 
 def get_signature(full_sig_path):
@@ -96,12 +87,13 @@ def get_signature(full_sig_path):
 
     index = split[-1].split('-')[-1]
 
-    query_result = session.query(TableSigstore).filter_by(full_reg_path=full_reg_path, index=index).all()
-    # todo: calidate only one row is returned.
+    query_result = session.query(TableSigstore).filter_by(full_reg_path=full_reg_path).order_by(asc(TableSigstore.id)).all()
+
     if len(query_result) == 0:
         return "signature not found.", 404
 
-    return query_result[0].signature, 200
+    return query_result[int(index)-1].signature, 200
+
 
 
 
