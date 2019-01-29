@@ -124,7 +124,6 @@ def decrypt_data(b64encrypted):
     return str(decrypted_data)
 
 
-
 def get_signature(full_sig_path):
     session = sigstore_db.Session()
 
@@ -136,7 +135,7 @@ def get_signature(full_sig_path):
     query_result = session.query(TableSigstore).filter_by(full_reg_path=full_reg_path).order_by(asc(TableSigstore.id)).all()
 
     if len(query_result) == 0:
-        return "signature not found.", 404
+        return "signature not found.", None, 404
 
     bin_sig = base64.b64decode(query_result[int(index)-1].signature)
 

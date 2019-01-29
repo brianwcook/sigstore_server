@@ -128,6 +128,8 @@ def get_sig(path):
         """
 
     signature, index, code = sigstore.get_signature(path)
+    if code == 404:
+        return make_response("Signature not found.", 404)
 
     return send_file(
     io.BytesIO(signature),
@@ -182,18 +184,11 @@ def find():
 #
 #
 
-
-
-
 if __name__ == '__main__':
     ssl_context = ('/tls/tls.crt',
                    '/tls/tls.key')
 
     app.run(debug=False, port=8443, host='0.0.0.0', ssl_context=ssl_context)
-
-
-
-
 
 
 #
